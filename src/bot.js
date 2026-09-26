@@ -1,6 +1,18 @@
-// Load the bot token from the .env file
+// Sets up the MongoDB client
 require('dotenv').config();
-const { token } = process.env;
+const { MongoClient } = require('mongodb');
+
+
+// Load the bot info from the .env file
+const token = process.env.TOKEN || process.env.token;
+
+
+// Sets up the MongoDB client
+const database = process.env.DATABASE;
+if (!database) {
+    throw new Error('DATABASE must be set to a MongoDB connection string.');
+}
+const mongoClient = new MongoClient(database);
 
 
 // Import what we need from discord.js
@@ -27,11 +39,29 @@ for (const folder of functionFolders) {
 }
 
 
+async function connectToMongoDB() {
+    await mongoClient.connect();
+    console.log('Successfully logged into MongoDB.');
+    return mongoClient;
+}
+
+async function disconnectFromMongoDB() {
+    await mongoClient.close();
+}
+
+
+
 // Start the handlers for events, slash commands, and buttons/menus/modals
 client.handleEvents();
 client.handleCommands();
 client.handleComponents();
 
 
-// Log the bot into Discord
-client.login(token);
+// Connect to MongoDB before starting the bot.
+connectToMongoDB()
+    .then(() => client.login(token))
+    .catch(async (err) => {
+        console.error('Failed to connect to MongoDB:', err);
+        await mongoClient.close();
+        process.exitCode = 1;
+    });

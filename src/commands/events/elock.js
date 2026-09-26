@@ -24,7 +24,7 @@ module.exports = {
 
 
             // Remove send access in the channel for the Arborists role
-            message.channel.permissionOverwrites.edit('977937739691470858', { SendMessages: false })
+            await channel.permissionOverwrites.edit('977937739691470858', { SendMessages: false })
 
                 // Confirmation embed
                 const embed = new EmbedBuilder()

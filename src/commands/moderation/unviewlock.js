@@ -23,7 +23,7 @@ module.exports = {
       let channel = interaction.options.getChannel('channel')
 
       // Give view access to the channel back to the Arborists role
-      channel.permissionOverwrites.edit('977937739691470858', { ViewChannel: true })
+      await channel.permissionOverwrites.edit('977937739691470858', { ViewChannel: true })
 
       // Confirmation embed
       const embed = new EmbedBuilder()

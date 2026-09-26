@@ -18,10 +18,15 @@ module.exports = {
                 await command.execute(interaction, client)
             } catch (error) {
                 console.error(error)
-                await interaction.reply({
+                const response = {
                     content: `Something went wrong while executing this command...`,
-                    ephermeral: true
-                })
+                    ephemeral: true
+                };
+                if (interaction.replied || interaction.deferred) {
+                    await interaction.followUp(response);
+                } else {
+                    await interaction.reply(response);
+                }
 
             }
 
@@ -30,7 +35,9 @@ module.exports = {
             const { buttons } = client
             const { customId } = interaction
             const button = buttons.get(customId)
-            if (!button) return new Error('There is no code for this button')
+            if (!button) {
+                return interaction.reply({ content: 'There is no code for this button.', ephemeral: true });
+            }
 
             try {
                 await button.execute(interaction, client)
@@ -44,12 +51,14 @@ module.exports = {
             const { selectMenus } = client
             const { customId } = interaction
             const menu = selectMenus.get(customId)
-            if (!menu) return new Error("There is no code for this select menu.")
+            if (!menu) {
+                return interaction.reply({ content: 'There is no code for this select menu.', ephemeral: true });
+            }
 
             try {
                 await menu.execute(interaction, client)
             } catch (err) {
-                console.error(error)
+                console.error(err)
             }
 
 

@@ -2,7 +2,7 @@
  * Logs into Discord and changes the bot's status every 10 seconds
  */
 module.exports = {
-    name: 'ready',
+    name: 'clientReady',
     once: true,
     async execute(client) {
 
